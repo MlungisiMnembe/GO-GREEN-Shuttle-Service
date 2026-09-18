@@ -1,12 +1,36 @@
 import os
 import sqlite3
 from functools import wraps
+
+from dotenv import load_dotenv
 from flask import Flask, render_template, redirect, url_for, request, flash, session
 import bcrypt
+
 from database import create_tables, create_connection
 
+
+# --------------------------------------------------
+# Load environment variables from .env
+# --------------------------------------------------
+load_dotenv()
+
+
+# --------------------------------------------------
+# Flask application configuration
+# --------------------------------------------------
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'dev-only-change-me')
+
+app.secret_key = os.environ.get("SECRET_KEY")
+
+if not app.secret_key:
+    raise RuntimeError(
+        "SECRET_KEY environment variable is not configured."
+    )
+
+
+# --------------------------------------------------
+# Initialise database tables
+# --------------------------------------------------
 create_tables()
 
 
@@ -53,7 +77,13 @@ def signup():
 def login():
     if request.method=='POST':
         email=request.form.get('email','').strip().lower(); password=request.form.get('password','')
-        admin_email=os.environ.get('ADMIN_EMAIL','admin@shuttle.com').lower(); admin_password=os.environ.get('ADMIN_PASSWORD','admin@123')
+        admin_email = os.environ.get('ADMIN_EMAIL', '').strip().lower()
+        admin_password = os.environ.get('ADMIN_PASSWORD', '')
+
+        if admin_email and admin_password and email == admin_email and password == admin_password:
+            session.clear()
+            session.update(user_id=0, username='Admin', is_admin=True)
+            return redirect(url_for('admin_dashboard'))
         if email==admin_email and password==admin_password:
             session.clear(); session.update(user_id=0,username='Admin',is_admin=True); return redirect(url_for('admin_dashboard'))
         conn=create_connection(); user=conn.execute("SELECT * FROM users WHERE email=?",(email,)).fetchone(); conn.close()
