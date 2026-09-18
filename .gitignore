@@ -13,6 +13,7 @@ __pycache__/
 # Environment variables / secrets
 .env
 .env.*
+!.env.example
 
 # Database files
 *.db
@@ -22,5 +23,3 @@ __pycache__/
 # OS files
 .DS_Store
 Thumbs.db
-# Local IDE
-.vscode/
