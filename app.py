@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import psycopg
 from functools import wraps
 
 from dotenv import load_dotenv
@@ -69,7 +70,7 @@ def signup():
         try:
             conn=create_connection(); conn.execute("INSERT INTO users(username,email,password) VALUES(?,?,?)",(username,email,bcrypt.hashpw(password.encode(),bcrypt.gensalt()))); conn.commit(); conn.close()
             flash('Account created. You can now log in.','success'); return redirect(url_for('login'))
-        except sqlite3.IntegrityError:
+        except (sqlite3.IntegrityError, psycopg.IntegrityError):
             flash('That email address is already registered.','danger')
     return render_template('signup.html')
 
