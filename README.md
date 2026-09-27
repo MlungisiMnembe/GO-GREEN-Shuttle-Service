@@ -8,7 +8,7 @@ Passengers can create accounts and request rides, users can apply to become driv
 
 The application is deployed on Render:
 
-https://go-green-shuttle-service-xmxj.onrender.com/
+[Open the Go-Green Shuttle Service](https://go-green-shuttle-service-xmxj.onrender.com/)
 
 > The hosted service may take a short time to start after a period of inactivity.
 
@@ -65,7 +65,7 @@ Administrators can review driver applications, manage customers and monitor live
 ## 🛠️ Tech Stack
 
 | Area | Technology |
-|---|---|
+| --- | --- |
 | Backend | Python, Flask |
 | Frontend | HTML, Jinja2, CSS |
 | Production Database | PostgreSQL |
@@ -405,21 +405,21 @@ The project demonstrates the development lifecycle from local development throug
 
 ## 🔗 Links
 
-**Live Application**
+### Live Application
 
-https://go-green-shuttle-service-xmxj.onrender.com/
+[Open the deployed Go-Green Shuttle Service](https://go-green-shuttle-service-xmxj.onrender.com/)
 
-**GitHub Repository**
+### GitHub Repository
 
-https://github.com/MlungisiMnembe/GO-GREEN-Shuttle-Service
+[View the source code on GitHub](https://github.com/MlungisiMnembe/GO-GREEN-Shuttle-Service)
 
 ---
 
 ## 👨‍💻 Author
 
-**Mlungisi Mnembe**
+### Mlungisi Mnembe
 
-GitHub: https://github.com/MlungisiMnembe
+[GitHub Profile](https://github.com/MlungisiMnembe)
 
 ---
 
