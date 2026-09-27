@@ -171,7 +171,29 @@ def admin_dashboard():
     drivers=conn.execute("""SELECT u.id,u.username,u.email,d.license,d.vehicle,d.status FROM users u JOIN driver_requests d ON d.user_id=u.id WHERE LOWER(d.status)='approved' AND d.id=(SELECT MAX(d2.id) FROM driver_requests d2 WHERE d2.user_id=d.user_id)""").fetchall()
     pending=conn.execute("""SELECT d.*,u.username,u.email FROM driver_requests d JOIN users u ON u.id=d.user_id WHERE LOWER(d.status)='pending' AND d.id=(SELECT MAX(d2.id) FROM driver_requests d2 WHERE d2.user_id=d.user_id) ORDER BY d.id DESC""").fetchall()
     rides=conn.execute("""SELECT r.*,u.username customer_name,d.username driver_name FROM rides r JOIN users u ON u.id=r.user_id LEFT JOIN users d ON d.id=r.driver_id ORDER BY r.id DESC LIMIT 10""").fetchall()
-    stats={'customers':conn.execute('SELECT COUNT(*) FROM users').fetchone()[0],'rides':conn.execute('SELECT COUNT(*) FROM rides').fetchone()[0],'drivers':len(drivers),'pending':len(pending),'earnings':conn.execute("SELECT COALESCE(SUM(fare),0) FROM rides WHERE status='completed'").fetchone()[0]}
+    customer_count = conn.execute(
+        "SELECT COUNT(*) AS count FROM users"
+    ).fetchone()["count"]
+
+    ride_count = conn.execute(
+        "SELECT COUNT(*) AS count FROM rides"
+    ).fetchone()["count"]
+
+    earnings = conn.execute(
+        """
+        SELECT COALESCE(SUM(fare), 0) AS total
+        FROM rides
+        WHERE status='completed'
+        """
+    ).fetchone()["total"]
+
+    stats = {
+    "customers": customer_count,
+    "rides": ride_count,
+    "drivers": len(drivers),
+    "pending": len(pending),
+    "earnings": earnings
+}
     conn.close(); return render_template('admin.html',customers=customers,drivers=drivers,pending_requests=pending,rides=rides,stats=stats)
 
 @app.route('/admin/pending_requests')
