@@ -1,6 +1,16 @@
 # Go-Green Shuttle Service 🚐🌱
 
-A complete Flask portfolio project for managing local shuttle rides. Passengers can create accounts and request rides, users can apply to become drivers, administrators approve driver applications, and approved drivers can accept and complete trips.
+A full-stack shuttle booking and ride-management web application built with Flask and PostgreSQL.
+
+Passengers can create accounts and request rides, users can apply to become drivers, administrators can review driver applications and manage customers, and approved drivers can accept, start and complete trips.
+
+## 🌐 Live Demo
+
+The application is deployed on Render:
+
+https://go-green-shuttle-service-xmxj.onrender.com/
+
+> The hosted service may take a short time to start after a period of inactivity.
 
 ## What the project demonstrates
 
@@ -10,51 +20,119 @@ A complete Flask portfolio project for managing local shuttle rides. Passengers 
 - Driver applications with admin approval/decline workflow
 - Approved-driver dashboard with available and assigned trips
 - Passenger ride history and cancellation
-- Admin dashboard using real database statistics
+- Admin dashboard with live database statistics
 - Customer block/unblock controls
-- SQLite persistence, bcrypt password hashing and environment-based secrets
-- Responsive, modern Flask/Jinja interface
+- PostgreSQL production database
+- bcrypt password hashing
+- Environment-based secrets and configuration
+- Gunicorn production server
+- Deployment on Render
+- Responsive Flask/Jinja2 interface
 
 ## Tech stack
 
-**Backend:** Python, Flask, SQLite, bcrypt  
+**Backend:** Python, Flask, bcrypt  
 **Frontend:** HTML, Jinja2, CSS  
-**Database:** SQLite
+**Database:** PostgreSQL (production), SQLite-compatible local development  
+**Production server:** Gunicorn  
+**Deployment:** Render  
+**Version control:** Git & GitHub
 
 ## Quick start
 
+Clone the repository and create a virtual environment:
+
 ```bash
+git clone https://github.com/MlungisiMnembe/GO-GREEN-Shuttle-Service.git
+cd GO-GREEN-Shuttle-Service
 python -m venv .venv
 ```
 
-Windows PowerShell:
+### Windows PowerShell
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+```
+
+Create your local environment configuration from `.env.example`.
+
+Configure your own secure values for the required environment variables. Never commit your `.env` file.
+
+Then start the application:
+
+```powershell
 python app.py
 ```
 
-Open `http://127.0.0.1:5000`.
+Open:
 
-### Admin login for local demo
+```text
+http://127.0.0.1:5000
+```
 
-By default the local development fallback is:
+## Environment configuration
 
-- Email: `admin@shuttle.com`
-- Password: `admin@123`
+The application uses environment variables for sensitive configuration.
 
-For anything beyond a local demo, create environment variables from `.env.example` and use your own strong values. Never commit `.env`.
+Use `.env.example` as the template for local development.
+
+Important:
+
+- Never commit `.env`
+- Use a strong, unique `SECRET_KEY`
+- Use private administrator credentials
+- Configure `DATABASE_URL` when connecting to PostgreSQL
+- Production secrets are configured through the hosting environment
+
+## Application workflow
+
+### Passenger
+
+1. Create an account.
+2. Log in.
+3. Request a shuttle ride.
+4. Select passenger count and payment preference.
+5. View current and previous rides.
+6. Cancel eligible ride requests.
+7. Track the ride through its lifecycle.
+
+### Driver
+
+1. Create an account.
+2. Submit a driver application.
+3. Wait for administrator approval.
+4. Open the Driver dashboard after approval.
+5. View available rides.
+6. Accept a ride.
+7. Start the assigned trip.
+8. Complete the trip.
+
+### Administrator
+
+1. Log in using securely configured administrator credentials.
+2. Review pending driver applications.
+3. Approve or decline applications.
+4. View registered customers.
+5. Block or unblock customer access.
+6. View approved drivers.
+7. Monitor ride statistics.
+8. Monitor completed ride value.
 
 ## End-to-end test
 
-1. Create a passenger account and request a ride.
-2. Create a second account and submit a driver application.
-3. Log in as Admin and approve that driver.
-4. Log in as the approved driver, open **Driver**, and accept the passenger's ride.
-5. Start and then complete the ride.
-6. Log back in as the passenger and confirm the completed trip appears in ride history.
-7. Open Admin to see real ride, driver and completed-value statistics.
+The deployed application has been tested through the complete workflow:
+
+1. Passenger account creation and login
+2. Ride request creation
+3. Driver account and application
+4. Administrator approval
+5. Driver login and ride acceptance
+6. Ride start and completion
+7. Passenger ride-history verification
+8. Administrator statistics verification
+
+This confirms the core application workflow operates against the deployed PostgreSQL database.
 
 ## Project structure
 
@@ -63,7 +141,10 @@ GO-GREEN-Shuttle-Service/
 ├── app.py
 ├── database.py
 ├── requirements.txt
+├── .python-version
 ├── .env.example
+├── .gitignore
+├── README.md
 ├── static/
 │   └── base-style.css
 └── templates/
@@ -78,13 +159,81 @@ GO-GREEN-Shuttle-Service/
     └── pending_requests.html
 ```
 
+## Database
+
+The deployed application uses PostgreSQL for persistent production data.
+
+The database layer supports the application's:
+
+- User accounts
+- Driver applications
+- Ride requests
+- Ride status lifecycle
+- Administrative statistics
+- Customer access controls
+
+The project was originally developed with SQLite and was subsequently migrated to PostgreSQL for deployment.
+
+## Deployment
+
+The production application is hosted on Render.
+
+Production stack:
+
+```text
+Browser
+   ↓
+Render Web Service
+   ↓
+Gunicorn
+   ↓
+Flask Application
+   ↓
+PostgreSQL
+```
+
+Render automatically deploys updates from the repository when changes are pushed to the configured branch.
+
+## Security
+
+The project includes several basic security practices:
+
+- Passwords are hashed using bcrypt
+- Application secrets are stored in environment variables
+- `.env` is excluded from version control
+- Production administrator credentials are not stored in the repository
+- Database credentials are supplied through environment configuration
+- Session-based authentication protects restricted application areas
+
 ## Notes
 
-The fare calculation is intentionally a transparent demo formula (`R45 + R20 per passenger`) so the repository runs without paid mapping/geocoding credentials. The earlier broken Google Maps dependency has been removed from the core booking flow. Card payment is represented as a demo payment preference; no real payment processor is connected.
+The fare calculation currently uses a transparent demonstration formula:
+
+```text
+R45 + R20 per passenger
+```
+
+This allows the booking workflow to operate without requiring paid mapping or geocoding services.
+
+Card payment is currently represented as a payment preference for demonstration purposes. No real payment processor is connected.
 
 ## Future enhancements
 
-Possible production extensions include Google Maps/Mapbox routing, live driver location, real payment processing, notifications, CSRF protection, database migrations, automated tests and deployment with PostgreSQL.
+Possible future improvements include:
+
+- Google Maps or Mapbox routing
+- Distance-based fare calculation
+- Live driver location tracking
+- Real online payment processing
+- Email/SMS notifications
+- CSRF protection
+- Formal database migrations
+- Automated unit and integration tests
+- CI/CD testing with GitHub Actions
+- Improved role-based access control
+- REST API endpoints
+- Mobile-friendly Progressive Web App functionality
 
 ---
-Built as a practical full-stack Flask portfolio project.
+
+Built as a practical full-stack Flask portfolio project using Python, Flask, PostgreSQL and Render.
